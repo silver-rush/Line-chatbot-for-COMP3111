@@ -9,10 +9,37 @@ import java.net.URI;
 
 @Slf4j
 public class SQLDatabaseEngine extends DatabaseEngine {
+
 	@Override
 	String search(String text) throws Exception {
-		//Write your code here
-		return null;
+		PreparedStatement partialMatchStatement = getConnection().prepareStatement(
+			"SELECT id, response, count FROM response_table WHERE STRPOS(LOWER(?), LOWER(keyword)) > 0;");
+
+		partialMatchStatement.setString(1, text);
+		ResultSet rs = partialMatchStatement.executeQuery();
+		System.err.println("QUERY: " + partialMatchStatement.toString());
+
+		String result = null;
+		if (rs.next()){
+			result = rs.getString(2) + " Count: " + rs.getInt(3);
+			System.err.println("FOUND: " + result);
+
+			// PreparedStatement updateCountStatement = getConnection().prepareStatement(
+			// 	"UPDATE response_table SET count = ? WHERE id = ?;");
+			// updateCountStatement.setInt(1, rs.getInt(1));
+			// updateCountStatement.setInt(2, rs.getInt(3));
+			// updateCountStatement.executeQuery();
+		}else{
+			System.err.println("NO RESULT: " + partialMatchStatement.toString());
+		}
+		rs.close();
+		partialMatchStatement.close();
+
+		if (result != null){
+			return result;
+		}else{
+			throw new Exception("NOT FOUND");
+		}
 	}
 	
 	
