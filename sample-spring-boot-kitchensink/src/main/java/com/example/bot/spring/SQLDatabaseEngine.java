@@ -26,7 +26,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 // 
 			PreparedStatement updateCountStatement = getConnection().prepareStatement(
 				"UPDATE response_table SET count = ? WHERE id = ?;");
-			updateCountStatement.setInt(1, rs.getInt(1));
+			updateCountStatement.setInt(1, rs.getInt(1) + 1);
 			updateCountStatement.setInt(2, rs.getInt(3));
 
 			System.err.println("UPDATE: " + updateCountStatement);
