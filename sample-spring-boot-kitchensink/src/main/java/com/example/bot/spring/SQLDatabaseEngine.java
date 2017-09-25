@@ -23,12 +23,14 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		if (rs.next()){
 			result = rs.getString(2) + " Count: " + rs.getInt(3);
 			System.err.println("FOUND: " + result);
+// 
+			PreparedStatement updateCountStatement = getConnection().prepareStatement(
+				"UPDATE response_table SET count = ? WHERE id = ?;");
+			updateCountStatement.setInt(1, rs.getInt(1));
+			updateCountStatement.setInt(2, rs.getInt(3));
 
-			// PreparedStatement updateCountStatement = getConnection().prepareStatement(
-			// 	"UPDATE response_table SET count = ? WHERE id = ?;");
-			// updateCountStatement.setInt(1, rs.getInt(1));
-			// updateCountStatement.setInt(2, rs.getInt(3));
-			// updateCountStatement.executeQuery();
+			System.err.println("UPDATE: " + updateCountStatement);
+			updateCountStatement.executeUpdate();
 		}else{
 			System.err.println("NO RESULT: " + partialMatchStatement.toString());
 		}
